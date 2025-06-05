@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">vendedorcadastrocliente</string>
+    <string name="title_activity_auth_screen">AuthScreen</string>
+</resources>
