@@ -5,7 +5,7 @@ import br.net.ligfibra.vendedorcadastrocliente.core.contracts.services.VendedorS
 import br.net.ligfibra.vendedorcadastrocliente.infra.erp.client.IXC
 import br.net.ligfibra.vendedorcadastrocliente.infra.repository.VendedorRepository
 import br.net.ligfibra.vendedorcadastrocliente.services.services.VendedorServicesImpl
-import br.net.ligfibra.vendedorcadastrocliente.ui.viewmodels.VendedorViewModel
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth.AuthViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -35,5 +35,5 @@ val appModule = module {
     single { IXC(httpClient = get()) }
     single<VendedorContracts> { VendedorRepository(get()) }
     single<VendedorServices> { VendedorServicesImpl(get()) }
-    viewModel { VendedorViewModel(get()) }
+    viewModel { AuthViewModel(get()) }
 }

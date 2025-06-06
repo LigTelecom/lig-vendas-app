@@ -1,4 +1,4 @@
-package br.net.ligfibra.vendedorcadastrocliente.ui.viewmodels
+package br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ sealed class AuthState {
     data class Error(val message: String) : AuthState()
 }
 
-class VendedorViewModel(private val vendedorServices: VendedorServices) : ViewModel() {
+class AuthViewModel(private val vendedorServices: VendedorServices) : ViewModel() {
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
     val authState = _authState.asStateFlow()

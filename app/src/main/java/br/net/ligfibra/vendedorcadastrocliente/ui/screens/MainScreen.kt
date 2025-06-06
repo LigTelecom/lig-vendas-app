@@ -1,14 +1,11 @@
 package br.net.ligfibra.vendedorcadastrocliente.ui.screens
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsPadding
+
+
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.Home
@@ -33,11 +30,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.CadastrarClienteScreen
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.home.HomeScreen
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.minhasvendas.MinhasVendasScreen
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.NavItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen(modifier: Modifier = Modifier) {
+fun MainScreen(modifier: Modifier = Modifier, navController: NavController) {
     var selectedIndex by remember {
         mutableIntStateOf(0)
     }
@@ -64,7 +65,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
                         icon = {
                             BadgedBox(badge = {
                                 if(navItem.badgeCount > 0)
-                                    Badge(){
+                                    Badge {
                                         Text(text = navItem.badgeCount.toString())
                                     }
                             }) {
@@ -90,15 +91,16 @@ fun MainScreen(modifier: Modifier = Modifier) {
             }
         }
     ) { innerPadding ->
-        ContentScreen(modifier = Modifier.padding(innerPadding), selectedIndex)
+        ContentScreen(modifier = Modifier
+            .padding(innerPadding), selectedIndex, navController)
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int) {
+fun ContentScreen(modifier: Modifier = Modifier, selectedIndex: Int, navController: NavController) {
     when(selectedIndex){
-        0 -> MinhaVendasScreen()
-        1 -> HomeScreen()
-        2 -> CadastrarClienteScreen()
+        0 -> MinhasVendasScreen(modifier, navController)
+        1 -> HomeScreen(modifier)
+        2 -> CadastrarClienteScreen(modifier)
     }
 }

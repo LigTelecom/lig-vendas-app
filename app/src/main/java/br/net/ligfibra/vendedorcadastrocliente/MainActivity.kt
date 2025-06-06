@@ -10,11 +10,13 @@ import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
+
 import androidx.navigation.compose.rememberNavController
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.AuthScreen
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.MainScreen
+import br.net.ligfibra.vendedorcadastrocliente.ui.navigation.AppNavGraph
+
 
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 
@@ -23,6 +25,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+
+        insetsController.apply {
+            hide(WindowInsetsCompat.Type.statusBars())
+            hide(WindowInsetsCompat.Type.navigationBars())
+            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        }
 
         enableEdgeToEdge()
 
@@ -34,14 +43,7 @@ class MainActivity : ComponentActivity() {
                        .background(MaterialTheme.colorScheme.primary)
                ) {
                    val navController = rememberNavController()
-                   NavHost(navController = navController, startDestination = "auth") {
-                       composable("auth") {
-                           AuthScreen(onEnterClick = { navController.navigate("main") })
-                       }
-                       composable("main") {
-                           MainScreen()
-                       }
-                   }
+                   AppNavGraph(navController)
                }
             }
         }

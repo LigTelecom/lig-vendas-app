@@ -1,14 +1,16 @@
-package br.net.ligfibra.vendedorcadastrocliente.ui.screens
+package br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Key
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -25,15 +27,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth.widgets.Logo
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
-import br.net.ligfibra.vendedorcadastrocliente.ui.viewmodels.AuthState
-import br.net.ligfibra.vendedorcadastrocliente.ui.viewmodels.VendedorViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
@@ -42,10 +44,10 @@ import org.koin.androidx.compose.koinViewModel
 fun AuthScreen(
     onEnterClick: () -> Unit,
     modifier: Modifier = Modifier,
-    vendedorViewModel: VendedorViewModel = koinViewModel()
+    authViewModel: AuthViewModel = koinViewModel()
 ) {
 
-    val authState by vendedorViewModel.authState.collectAsState()
+    val authState by authViewModel.authState.collectAsState()
     val resultado = remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -56,14 +58,19 @@ fun AuthScreen(
     }
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        modifier = Modifier
+        modifier = modifier
             .background(MaterialTheme.colorScheme.primary)
         ) {
         var email by remember {
             mutableStateOf("")
         }
-        Column(modifier = Modifier.padding(horizontal = 64.dp)) {
+        Column(
+            modifier = Modifier.padding(horizontal = 64.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(Modifier.height(170.dp))
+            Logo(450.dp)
             OutlinedTextField(
                 value = email, onValueChange = {
                     email = it
@@ -92,12 +99,43 @@ fun AuthScreen(
                 }
             )
 
+            var senha by remember {
+                mutableStateOf("")
+            }
+            OutlinedTextField(
+                value = senha, onValueChange = {
+                    senha = it
+                },
+                Modifier
+                    .padding(8.dp)
+                    .height(82.dp)
+                    .fillMaxWidth(),
+                label = { Text("Senha", fontSize = 18.sp) },
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
+                    focusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedLabelColor = MaterialTheme.colorScheme.tertiary,
+                    focusedIndicatorColor = MaterialTheme.colorScheme.secondary,
+                    unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary,
+                    focusedTextColor = MaterialTheme.colorScheme.tertiary,
+                    unfocusedTextColor = MaterialTheme.colorScheme.tertiary
+                ),
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.Key,
+                        contentDescription = "Representa senha",
+                        tint = MaterialTheme.colorScheme.tertiary
+                    )
+                }
+            )
+
         }
         Column(modifier = Modifier.padding(horizontal = 61.dp)) {
             Button(
                 onClick = {
                     coroutineScope.launch {
-                        vendedorViewModel.buscarVendedor(email)
+                        authViewModel.buscarVendedor(email)
                     }
                 },
                 colors = ButtonDefaults.buttonColors(

@@ -1,26 +1,22 @@
 package br.net.ligfibra.vendedorcadastrocliente.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
     primary = md_theme_primary,
     secondary = md_theme_secondary,
-    tertiary = md_theme_tertiary
+    tertiary = md_theme_tertiary,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = md_theme_primary,
     secondary = md_theme_secondary,
-    tertiary = md_theme_tertiary
+    tertiary = md_theme_tertiary,
+
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
