@@ -19,7 +19,7 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable("venda/{vendaId}") { backStackEntry ->
             val id = backStackEntry.arguments?.getString("vendaId").toString()
-            VendaDetalhesScreen(vendaId = id)
+            VendaDetalhesScreen(navController = navController, vendaId = id)
         }
     }
 }

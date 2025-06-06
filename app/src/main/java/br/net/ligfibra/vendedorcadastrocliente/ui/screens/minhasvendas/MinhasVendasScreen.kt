@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.minhasvendas.widgets.VendaCard
 
@@ -25,6 +24,7 @@ fun MinhasVendasScreen(modifier: Modifier = Modifier, navController: NavControll
     Column(
         modifier = modifier
             .background(MaterialTheme.colorScheme.primary)
+            .fillMaxSize()
             .padding(horizontal = 32.dp)
             .verticalScroll(rememberScrollState()),
     ) {
@@ -40,7 +40,7 @@ fun MinhasVendasScreen(modifier: Modifier = Modifier, navController: NavControll
                 .background(MaterialTheme.colorScheme.primary),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            repeat(9) {
+            repeat(3) {
                 VendaCard({navController.navigate("venda/${1}")})
             }
         }
@@ -49,7 +49,7 @@ fun MinhasVendasScreen(modifier: Modifier = Modifier, navController: NavControll
 
 @Preview
 @Composable
-fun MinhaVendasScreenPreview() {
+private fun MinhaVendasScreenPreview() {
     VendedorcadastroclienteTheme {
         MinhasVendasScreen(
             modifier = TODO(),
