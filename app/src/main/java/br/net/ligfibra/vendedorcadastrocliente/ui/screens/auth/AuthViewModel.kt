@@ -15,7 +15,7 @@ sealed class AuthState {
 
 class AuthViewModel(private val vendedorServices: VendedorServices) : ViewModel() {
 
-    private val _authState = MutableStateFlow<AuthState>(AuthState.Idle)
+    private val _authState = MutableStateFlow<AuthState>(value = AuthState.Idle)
     val authState = _authState.asStateFlow()
 
     fun buscarVendedor(email: String) {
