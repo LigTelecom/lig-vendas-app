@@ -1,9 +1,14 @@
 package br.net.ligfibra.vendedorcadastrocliente.core.enums
 
 public enum class EstadoCivilEnum {
-    Solteiro,
     Casado,
-    Separado,
     Divorciado,
-    Viúvo
+    Solteiro,
+    Viúvo;
+
+    companion object {
+        fun getEstadoCivis(): List<String> {
+            return values().map { it.name }
+        }
+    }
 }
