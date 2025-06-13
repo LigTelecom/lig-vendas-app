@@ -26,7 +26,8 @@ fun VendaDetalhesScreen(vendaId: String, navController: NavController) {
     ) {
     AppBar(navController)
         Column(
-            Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(horizontal = 32.dp, vertical = 16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
