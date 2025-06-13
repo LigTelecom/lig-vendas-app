@@ -20,12 +20,12 @@ import org.koin.dsl.module
 val appModule = module {
 
     single {
-        HttpClient(CIO) {
-            install(Logging) {
+        HttpClient(engineFactory = CIO) {
+            install(plugin = Logging) {
                 level = LogLevel.ALL
             }
-            install(ContentNegotiation) {
-                json(Json {
+            install(plugin = ContentNegotiation) {
+                json(json = Json {
                     ignoreUnknownKeys = true
                 })
             }
