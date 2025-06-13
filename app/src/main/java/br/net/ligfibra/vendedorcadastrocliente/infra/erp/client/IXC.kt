@@ -9,16 +9,12 @@ import br.net.ligfibra.vendedorcadastrocliente.services.requests.erp.Query
 import br.net.ligfibra.vendedorcadastrocliente.services.responses.erp.ResponseResult
 import br.net.ligfibra.vendedorcadastrocliente.services.responses.vendedor.VendedorResponse
 import br.net.ligfibra.vendedorcadastrocliente.utils.constants.Constants
-
 import io.ktor.client.HttpClient
-
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
-
 import kotlinx.serialization.json.Json
-
 
 class IXC(
     val url: String = Constants.BASE_URL_IXC,
@@ -26,17 +22,17 @@ class IXC(
     private val httpClient: HttpClient,
 ) {
     init {
-        require(url.isNotBlank()) { throw IxcUrlVazioException() }
-        require(url.isNotBlank()) { throw IxcTokenVazioException() }
+        require(value = url.isNotBlank()) { throw IxcUrlVazioException() }
+        require(value = url.isNotBlank()) { throw IxcTokenVazioException() }
     }
 
     suspend fun consultarUsuarios() {
 
-        val response = httpClient.post(this.url + "/v1/usuarios") {
+        val response = httpClient.post(urlString = "${this.url}/v1/usuarios") {
             headers {
-                append("Content-Type", "application/json")
-                append("Authorization", "Basic $token")
-                append("ixcsoft", "listar")
+                append(name = "Content-Type", value = "application/json")
+                append(name = "Authorization", value = "Basic $token")
+                append(name = "ixcsoft", value = "listar")
             }
         }
 
@@ -53,18 +49,18 @@ class IXC(
 
         val response = httpClient.post(this.url + "/v1/usuarios") {
             headers {
-                append("Content-Type", "application/json")
-                append("Authorization", "Basic $token")
-                append("ixcsoft", "listar")
+                append(name = "Content-Type", value = "application/json")
+                append(name = "Authorization", value = "Basic $token")
+                append(name = "ixcsoft", value = "listar")
             }
-            setBody(Query(
-                "usuarios.email",
-                email,
-                "=",
-                "1",
-                "",
-                "",
-                ""
+            setBody(body = Query(
+                qtype = "usuarios.email",
+                query =  email,
+                oper = "=",
+                page = "1",
+                rp = "",
+                sortname = "",
+                sortoder = ""
             ))
         }
 
@@ -75,12 +71,13 @@ class IXC(
         }
 
         val responseObject: ResponseResult<VendedorResponse> = json.decodeFromString(
-            ResponseResult.serializer(VendedorResponse.serializer()),
-            responseText
+            deserializer = ResponseResult.serializer(typeSerial0 = VendedorResponse.serializer()),
+            string = responseText
         )
 
-        if (responseObject.registros.isEmpty()) return Result.failure(UsuarioNãoEncontrado())
+        if (responseObject.registros.isEmpty())
+            return Result.failure(exception = UsuarioNãoEncontrado())
 
-        return Result.success(responseObject.registros.first())
+        return Result.success(value = responseObject.registros.first())
     }
 }
