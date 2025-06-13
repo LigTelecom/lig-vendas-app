@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -30,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,8 +52,9 @@ fun AuthScreen(
 ) {
 
     val authState by authViewModel.authState.collectAsState()
-    val resultado = remember { mutableStateOf<String?>(null) }
+    val resultado = remember { mutableStateOf<String?>(value = null) }
     val coroutineScope = rememberCoroutineScope()
+    var loading by remember { mutableStateOf(false) }
 
     LaunchedEffect(authState) {
         if (authState is AuthState.Success) {
@@ -75,11 +80,12 @@ fun AuthScreen(
                 value = email, onValueChange = {
                     email = it
                 },
-                Modifier
+                modifier = Modifier
                     .padding(8.dp)
                     .height(82.dp)
                     .fillMaxWidth(),
                 label = { Text("Email", fontSize = 18.sp) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = MaterialTheme.colorScheme.primary,
                     unfocusedContainerColor = MaterialTheme.colorScheme.primary,
@@ -88,7 +94,8 @@ fun AuthScreen(
                     focusedIndicatorColor = MaterialTheme.colorScheme.secondary,
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.secondary,
                     focusedTextColor = MaterialTheme.colorScheme.tertiary,
-                    unfocusedTextColor = MaterialTheme.colorScheme.tertiary
+                    unfocusedTextColor = MaterialTheme.colorScheme.tertiary,
+                    cursorColor = MaterialTheme.colorScheme.tertiary
                 ),
                 leadingIcon = {
                     Icon(
@@ -106,7 +113,7 @@ fun AuthScreen(
                 value = senha, onValueChange = {
                     senha = it
                 },
-                Modifier
+                modifier = Modifier
                     .padding(8.dp)
                     .height(82.dp)
                     .fillMaxWidth(),
@@ -134,9 +141,11 @@ fun AuthScreen(
         Column(modifier = Modifier.padding(horizontal = 61.dp)) {
             Button(
                 onClick = {
+                    loading = true
                     coroutineScope.launch {
                         authViewModel.buscarVendedor(email)
                     }
+                    loading = false
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary,
@@ -145,11 +154,20 @@ fun AuthScreen(
                 modifier = Modifier
                     .padding(8.dp)
                     .height(82.dp)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
 
             ) {
                 Text("Entrar", fontSize = 26.sp)
             }
+
+            if (loading == true) {
+                CircularProgressIndicator(
+                    modifier = Modifier.width(64.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                )
+            }
+
 
             when (authState) {
                 is AuthState.Error -> {
