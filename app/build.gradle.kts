@@ -46,9 +46,15 @@ val koin_version = "4.0.3"
 
 dependencies {
 
+    // Play Services
+    implementation("com.google.android.gms:play-services-location:21.1.0")
+    implementation("com.google.accompanist:accompanist-permissions:0.35.0-alpha")
+
+    // Koin
     implementation("io.insert-koin:koin-android:$koin_version")
     implementation("io.insert-koin:koin-androidx-compose:$koin_version")
 
+    // Ktor
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("io.ktor:ktor-client-logging:$ktor_version")
@@ -61,9 +67,13 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
 
+    // CameraX
     implementation("androidx.camera:camera-camera2:1.2.3")
     implementation("androidx.camera:camera-lifecycle:1.2.3")
     implementation("androidx.camera:camera-view:1.3.0-beta01")
+
+    // Google Maps
+    implementation("com.google.maps.android:maps-compose:6.6.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
