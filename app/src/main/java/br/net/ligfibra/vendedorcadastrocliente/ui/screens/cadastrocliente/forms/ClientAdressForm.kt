@@ -1,8 +1,11 @@
 package br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,22 +34,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.net.ligfibra.vendedorcadastrocliente.core.entities.ClienteLocalizacao
 import br.net.ligfibra.vendedorcadastrocliente.core.enums.MoradiaEnum
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.HorizontalDividerWithText
+import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapView
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.OutlineContainer
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.OutlinedContainerColors
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.rememberCameraPositionState
 
 @Composable
 fun ClientAdressForm(next:() -> Unit, back:() -> Unit) {
+    val context = LocalContext.current
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    var point by remember { mutableStateOf<ClienteLocalizacao?>(null) }
+    val alagoas = LatLng(-9.763890555988786, -36.61089261823257)
+    val cameraPositionState = rememberCameraPositionState {
+        position = CameraPosition.fromLatLngZoom(alagoas, 12f)
+    }
+
     var cepInputValue by remember { mutableStateOf("") }
     var cidadeInputValue by remember { mutableStateOf("") }
     var enderecoInputValue by remember { mutableStateOf("") }
     var numeroCasaInputValue by remember { mutableStateOf("") }
     var bairroInputValue by remember { mutableStateOf("") }
+    var pontoReferenciaInputValue by remember { mutableStateOf("") }
     var localizacaoInputValue by remember { mutableStateOf<ClienteLocalizacao?>(null) }
 
     val tipoMoradias = MoradiaEnum.getTiposMoradia()
@@ -108,7 +128,24 @@ fun ClientAdressForm(next:() -> Unit, back:() -> Unit) {
                     Text("*Bairro")
                 }
             )
+
         }
+
+        Row {
+            OutlinedTextField(
+                value = pontoReferenciaInputValue,
+                onValueChange = {
+                    pontoReferenciaInputValue = it
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
+                label = {
+                    Text("Ponto de referência")
+                }
+            )
+        }
+
         Row {
 
             OutlinedTextField(
@@ -166,10 +203,20 @@ fun ClientAdressForm(next:() -> Unit, back:() -> Unit) {
                 }
             }
         }
-        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             HorizontalDividerWithText(text = "Localização")
 
-            Text("MAPA")
+            Box(modifier = Modifier
+                .padding(vertical = 8.dp)) {
+                MapView(
+                    point = point,
+                    clienteNome = "Cliente teste",
+                    cameraPositionState = cameraPositionState
+                )
+            }
 
             Button(
                 colors = ButtonColors(
@@ -179,7 +226,12 @@ fun ClientAdressForm(next:() -> Unit, back:() -> Unit) {
                     disabledContentColor = Color.White,
                 ),
                 onClick = {
-                    // TODO
+                    getCurrentUserLocation(
+                        context,
+                        fusedLocationClient
+                    ) { location ->
+                        point = location
+                    }
                 }
             ) {
                 Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
@@ -229,6 +281,28 @@ fun ClientAdressForm(next:() -> Unit, back:() -> Unit) {
                     text = "Confirmar",
                 )
             }
+        }
+    }
+}
+
+@SuppressLint("MissingPermission")
+fun getCurrentUserLocation(
+    context: Context,
+    fusedLocationProviderClient: FusedLocationProviderClient,
+    onLocationReceived: (ClienteLocalizacao?) -> Unit
+) {
+    fusedLocationProviderClient.getCurrentLocation(
+        Priority.PRIORITY_HIGH_ACCURACY,
+        null
+    ).addOnSuccessListener { location ->
+        if (location != null) {
+            val latitude = location.latitude
+            val longitude = location.longitude
+            val clienteLocalizacao = ClienteLocalizacao(lat = latitude, long = longitude)
+            Log.d("Location", "Lat: $latitude, Long: $longitude")
+            onLocationReceived(clienteLocalizacao)
+        } else {
+            onLocationReceived(null)
         }
     }
 }
