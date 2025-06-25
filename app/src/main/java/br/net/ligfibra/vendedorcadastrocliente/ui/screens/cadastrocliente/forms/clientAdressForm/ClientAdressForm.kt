@@ -44,6 +44,7 @@ import br.net.ligfibra.vendedorcadastrocliente.core.entities.ClienteLocalizacao
 import br.net.ligfibra.vendedorcadastrocliente.core.enums.MoradiaEnum
 import br.net.ligfibra.vendedorcadastrocliente.core.validation.ValidationResult
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
+import br.net.ligfibra.vendedorcadastrocliente.ui.utils.extensions.CEPVisualTransformation
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.HorizontalDividerWithText
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapView
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapViewCameraSettings
@@ -110,7 +111,8 @@ fun ClientAdressForm(
                     label = { Text("*CEP") },
                     isError = cepErrorMessage.isNotEmpty(),
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    visualTransformation = CEPVisualTransformation(),
                 )
                 if (cepErrorMessage.isNotEmpty()) {
                     Text(text = cepErrorMessage, color = Color.Red)
