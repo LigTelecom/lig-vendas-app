@@ -69,7 +69,7 @@ public class ClientInfoFormsViewModel : ViewModel() {
 
         return try {
             val contato = ClienteContato(
-                telefone = Telefone(telefone),
+                telefone = Telefone(Telefone.formatarTelefoneComoIndexed(telefone)),
                 email = Email(email)
             )
             Log.i("validateContato", "validateContato: telefone $telefone ")
