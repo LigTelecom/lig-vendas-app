@@ -1,4 +1,4 @@
-package br.net.ligfibra.vendedorcadastrocliente.services.responses.erp
+package br.net.ligfibra.vendedorcadastrocliente.infra.erp.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
