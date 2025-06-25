@@ -1,20 +1,22 @@
 package br.net.ligfibra.vendedorcadastrocliente.infra.erp.client
 
 import android.util.Log
+import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.CidadeNaoEncontradaException
 import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.EmailNaoInformadoException
 import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.IxcTokenVazioException
 import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.IxcUrlVazioException
-import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.UsuarioNãoEncontrado
+import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.UfNaoInformadoException
+import br.net.ligfibra.vendedorcadastrocliente.infra.erp.exceptions.UsuarioNaoEncontradoException
+import br.net.ligfibra.vendedorcadastrocliente.infra.erp.helpers.consultarEntidade
+import br.net.ligfibra.vendedorcadastrocliente.infra.erp.models.Cidade
 import br.net.ligfibra.vendedorcadastrocliente.services.requests.erp.Query
-import br.net.ligfibra.vendedorcadastrocliente.services.responses.erp.ResponseResult
 import br.net.ligfibra.vendedorcadastrocliente.services.responses.vendedor.VendedorResponse
 import br.net.ligfibra.vendedorcadastrocliente.utils.constants.Constants
 import io.ktor.client.HttpClient
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
-import io.ktor.client.request.setBody
+
 import io.ktor.client.statement.bodyAsText
-import kotlinx.serialization.json.Json
 
 class IXC(
     val url: String = Constants.BASE_URL_IXC,
@@ -45,39 +47,40 @@ class IXC(
 
     suspend fun consultarUsuarioPorEmail(email: String): Result<VendedorResponse> {
 
-        if (!email.isNotBlank()) return Result.failure(EmailNaoInformadoException())
+        val query = Query(qtype = "usuarios.email", query = email, oper = "=", page = "1")
 
-        val response = httpClient.post(this.url + "/v1/usuarios") {
-            headers {
-                append(name = "Content-Type", value = "application/json")
-                append(name = "Authorization", value = "Basic $token")
-                append(name = "ixcsoft", value = "listar")
-            }
-            setBody(body = Query(
-                qtype = "usuarios.email",
-                query =  email,
-                oper = "=",
-                page = "1",
-                rp = "",
-                sortname = "",
-                sortoder = ""
-            ))
-        }
-
-        val responseText = response.bodyAsText()
-
-        val json = Json {
-            ignoreUnknownKeys = true
-        }
-
-        val responseObject: ResponseResult<VendedorResponse> = json.decodeFromString(
-            deserializer = ResponseResult.serializer(typeSerial0 = VendedorResponse.serializer()),
-            string = responseText
+        return consultarEntidade(
+            endpoint = "/v1/usuarios",
+            query = query,
+            validationFunctions = listOf({ validateEmail(email) }),
+            notFoundException = UsuarioNaoEncontradoException(),
+            httpClient = httpClient,
+            url = url,
+            token = token
         )
-
-        if (responseObject.registros.isEmpty())
-            return Result.failure(exception = UsuarioNãoEncontrado())
-
-        return Result.success(value = responseObject.registros.first())
     }
+
+    suspend fun consultarCidadesPorUF(uf: String): Result<Cidade> {
+
+        val query = Query(qtype = "cidade.uf", query = uf, oper = "=", page = "1")
+
+        return consultarEntidade(
+            endpoint = "/v1/cidade",
+            query = query,
+            validationFunctions = listOf({ validateUf(uf) }),
+            notFoundException = CidadeNaoEncontradaException(),
+            httpClient = httpClient,
+            url = url,
+            token = token
+        )
+    }
+
+    private fun validateUf(uf: String): Unit {
+        if (!uf.isNotBlank()) throw UfNaoInformadoException()
+    }
+
+    private fun validateEmail(email: String): Unit {
+        if (!email.isNotBlank()) throw EmailNaoInformadoException()
+    }
+
 }
