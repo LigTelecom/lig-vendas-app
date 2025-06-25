@@ -2,7 +2,7 @@ package br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.net.ligfibra.vendedorcadastrocliente.core.contracts.services.VendedorServices
+import br.net.ligfibra.vendedorcadastrocliente.services.interfaces.VendedorServices
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
