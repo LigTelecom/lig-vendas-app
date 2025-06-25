@@ -19,6 +19,8 @@ import br.net.ligfibra.vendedorcadastrocliente.ui.screens.vendadetalhes.widgets.
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.AppBar
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapView
+import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapViewCameraSettings
+import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.MapViewPointSettings
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
@@ -48,10 +50,11 @@ fun VendaDetalhesScreen(vendaId: String, navController: NavController) {
             CardDetalheVenda()
             Spacer(modifier = Modifier.height(12.dp))
             MapView(
-                point = point,
-                clienteNome = "Carla Souza",
-                zoom = 10f,
-                cameraPositionState = cameraPositionState
+                pointSettings = MapViewPointSettings(point = point, "teste"),
+                cameraSettings = MapViewCameraSettings(
+                    positionState = cameraPositionState,
+                    zoom = 12f
+                )
             )
         }
     }

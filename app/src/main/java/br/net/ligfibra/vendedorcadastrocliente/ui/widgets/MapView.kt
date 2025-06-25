@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import br.net.ligfibra.vendedorcadastrocliente.core.entities.ClienteLocalizacao
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
@@ -29,43 +29,51 @@ import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.MarkerInfoWindow
 import com.google.maps.android.compose.MarkerState
 
+data class MapViewPointSettings(val point: ClienteLocalizacao?, val clienteNome: String)
+data class MapViewCameraSettings(val zoom: Float = 10f, val positionState: CameraPositionState)
+data class MapViewSettings(
+    val height: Dp = 300.dp,
+    val borderColor: Color = Color.Blue
+)
+
 @Composable
 fun MapView(
-    point: ClienteLocalizacao?,
-    clienteNome: String,
-    zoom: Float = 10f,
-    cameraPositionState: CameraPositionState
+    pointSettings: MapViewPointSettings,
+    cameraSettings: MapViewCameraSettings,
+    settings: MapViewSettings = MapViewSettings()
 ) {
-    LaunchedEffect(point) {
-        point?.let {
-            cameraPositionState.move(
-                CameraUpdateFactory.newLatLngZoom(LatLng(it.lat, it.long), zoom)
+    LaunchedEffect(pointSettings.point) {
+        pointSettings.point?.let {
+            cameraSettings.positionState.move(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(it.lat, it.long), cameraSettings.zoom
+                )
             )
         }
     }
     GoogleMap(
-        cameraPositionState = cameraPositionState,
+        cameraPositionState = cameraSettings.positionState,
         uiSettings = MapUiSettings(zoomControlsEnabled = false),
         modifier = Modifier
-            .height(400.dp)
+            .height(settings.height)
             .border(
                 border = BorderStroke(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.secondary
+                    color = settings.borderColor
                 ),
                 shape = RoundedCornerShape(10)
             )
             .clip(RoundedCornerShape(10))
     ) {
-        LaunchedEffect(point) {
-            point?.let {
-                cameraPositionState.move(CameraUpdateFactory.newLatLngZoom(
-                    LatLng(it.lat, it.long), zoom
+        LaunchedEffect(pointSettings.point) {
+            pointSettings.point?.let {
+                cameraSettings.positionState.move(CameraUpdateFactory.newLatLngZoom(
+                    LatLng(it.lat, it.long), cameraSettings.zoom
                 ))
             }
         }
 
-        point?.let {
+        pointSettings.point?.let {
             MarkerInfoWindow(
                 state = MarkerState(position = LatLng(it.lat, it.long)),
             ) {
@@ -81,7 +89,7 @@ fun MapView(
                         .background(Color.Blue)
                         .padding(20.dp)
                 ) {
-                    Text(clienteNome, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(pointSettings.clienteNome, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -92,6 +100,6 @@ fun MapView(
 @Composable
 private fun MapViewPreview() {
     VendedorcadastroclienteTheme {
-        MapView(null, "Cliente teste", TODO(), TODO())
+        MapView(pointSettings = MapViewPointSettings(null, "Cliente teste"), TODO())
     }
 }

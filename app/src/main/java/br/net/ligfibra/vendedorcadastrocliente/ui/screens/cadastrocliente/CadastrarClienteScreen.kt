@@ -1,6 +1,8 @@
 package br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente
 
 import android.graphics.Bitmap
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,13 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.ClientAdressForm
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.ClientInfoForm
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientAdressForm.ClientAdressForm
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoForm
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.DocumentsUploadForm
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientAdressForm.ClientAdressFormViewModel
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoFormsViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.Form
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.GetPermissions
+import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CadastrarClienteScreen(modifier: Modifier = Modifier) {
     var step by remember { mutableStateOf<Int>(1) }
@@ -51,16 +57,20 @@ fun CadastrarClienteScreen(modifier: Modifier = Modifier) {
         Form(
             step = 2,
             content = {
+                val viewModelClientInfo: ClientInfoFormsViewModel = koinViewModel()
                 ClientInfoForm(
-                    ::nextStep,
-                    ::backStep
+                    viewModel = viewModelClientInfo,
+                    next = ::nextStep,
+                    back = ::backStep
                 )
             },
         ),
         Form(
             step = 3,
             content = {
+                val viewModelClientAdress: ClientAdressFormViewModel = koinViewModel()
                 ClientAdressForm(
+                    viewModel = viewModelClientAdress,
                     ::nextStep,
                     ::backStep
                 )
@@ -93,6 +103,7 @@ fun anyImageIsNull(imgRG: Bitmap?, imgComprovanteResidencia: Bitmap?): Boolean {
     return !(imgRG == null && imgComprovanteResidencia == null)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun CadastrarClienteScreenPreview() {
