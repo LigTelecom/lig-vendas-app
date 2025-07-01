@@ -60,8 +60,6 @@ fun ClientInfoForm(
     next: () -> Unit,
     back: () -> Unit) {
 
-    // Info Pessoal
-
     val focusManager = LocalFocusManager.current
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -69,6 +67,7 @@ fun ClientInfoForm(
     
 
     val expandedEstadoCivilSelect = remember { mutableStateOf(false) }
+
 
     Column(verticalArrangement = Arrangement.Center) {
         HorizontalDividerWithText(text = "Informações pessoais")

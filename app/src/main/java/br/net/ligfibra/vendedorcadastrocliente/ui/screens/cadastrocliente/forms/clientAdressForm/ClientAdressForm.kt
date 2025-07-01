@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewModelScope
 import br.net.ligfibra.vendedorcadastrocliente.core.entities.ClienteLocalizacao
+import br.net.ligfibra.vendedorcadastrocliente.core.enums.LocalidadesEnum
 import br.net.ligfibra.vendedorcadastrocliente.core.enums.MoradiaEnum
 import br.net.ligfibra.vendedorcadastrocliente.core.validation.ValidationResult
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
@@ -77,6 +78,9 @@ fun ClientAdressForm(
     val tipoMoradias = MoradiaEnum.getTiposMoradia()
     var expandedTiposMoradiaSelect = remember { mutableStateOf(false) }
 
+    val tipoLocalidades = LocalidadesEnum.getTiposLocalidade()
+    var expandedTiposLocalidadeSelect = remember { mutableStateOf(false) }
+
     var scrollState = rememberScrollState()
     Column(
         verticalArrangement = Arrangement.Center,
@@ -88,7 +92,8 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.cep.value,
-                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setCep(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState
+                        .setCep(it) },
                     label = { Text("*CEP") },
                     isError = enderecoState.cep.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -192,12 +197,15 @@ fun ClientAdressForm(
                     Text(text = enderecoState.numeroCasa.errorMessage, color = Color.Red)
                 }
             }
+        }
 
+        Row {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .clickable { expandedTiposMoradiaSelect.value = true }
+                    .width(300.dp)
                     .padding(8.dp),
 
                 ) {
@@ -208,7 +216,6 @@ fun ClientAdressForm(
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(text = "Moradia", color = MaterialTheme.colorScheme.secondary)
                         val arrowIcon = if (expandedTiposMoradiaSelect.value != true) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp
@@ -235,7 +242,51 @@ fun ClientAdressForm(
                     }
                 }
             }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .clickable { expandedTiposLocalidadeSelect.value = true }
+                    .width(300.dp)
+                    .padding(8.dp),
+
+                ) {
+                OutlineContainer(
+                    outlinedContainerColors = OutlinedContainerColors(
+                        borderColor = Color.Transparent,
+                        backgroundColor = Color.White)) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "Moradia", color = MaterialTheme.colorScheme.secondary)
+                        val arrowIcon = if (expandedTiposLocalidadeSelect.value != true) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowUp
+                        Icon(
+                            imageVector = arrowIcon, contentDescription = null
+                        )
+                    }
+                    Text(
+                        text = enderecoState.tipoLocalidade.value.localidade,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                DropdownMenu(
+                    expanded = expandedTiposLocalidadeSelect.value, onDismissRequest = {
+                        expandedTiposLocalidadeSelect.value = false
+                    }) {
+                    tipoLocalidades.forEach { localidade ->
+                        DropdownMenuItem(text = { Text(text = LocalidadesEnum.getLocalidade(localidade)) },
+                            onClick = {
+                                expandedTiposMoradiaSelect.value = false
+                                viewModel.enderecoFormState = viewModel.enderecoFormState.setTipoLocalidade(LocalidadesEnum.valueOf(localidade))
+                            }
+                        )
+                    }
+                }
+            }
         }
+
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
