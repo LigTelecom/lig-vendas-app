@@ -76,7 +76,8 @@ fun ClientInfoForm(
             Column {
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.clienteNome.value,
-                    onValueChange = { viewModel.setClienteNome(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setClienteNome(it) },
                     label = { Text("*Nome Completo") },
                     isError = viewModel.clienteInfoFormState.clienteNome.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -96,7 +97,8 @@ fun ClientInfoForm(
                         onClick = {
                             datePickerState
                                 .selectedDateMillis?.let { millis ->
-                                    viewModel.setDataNascimento(millis.toBrazilianDate())
+                                    viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                                        .setDataNascimento(millis.toBrazilianDate())
                                 }
                             showDatePickerDialog = false
                         }
@@ -181,7 +183,8 @@ fun ClientInfoForm(
             value = viewModel.clienteInfoFormState.naturalidade.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             label = { Text("*Naturalidade") },
-            onValueChange = { viewModel.setNaturalidade(it) },
+            onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                .setNaturalidade(it) },
             modifier = Modifier
                 .padding(8.dp),
         )
@@ -194,7 +197,8 @@ fun ClientInfoForm(
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.telefone.value,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    onValueChange = { viewModel.setTelefone(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setTelefone(it) },
                     label = { Text("*Telefone") },
                     isError = viewModel.clienteInfoFormState.telefone.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -207,7 +211,8 @@ fun ClientInfoForm(
             Column {
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.email.value,
-                    onValueChange = { viewModel.setEmail(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setEmail(it) },
                     label = { Text("Email") },
                     isError = viewModel.clienteInfoFormState.email.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -225,7 +230,8 @@ fun ClientInfoForm(
             Column {
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.cpf.value,
-                    onValueChange = { viewModel.setCpf(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setCpf(it) },
                     label = { Text("*CPF") },
                     isError = viewModel.clienteInfoFormState.cpf.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -240,7 +246,8 @@ fun ClientInfoForm(
             Column {
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.rg.value,
-                    onValueChange = { viewModel.setRg(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setRg(it) },
                     label = { Text("*RG") },
                     isError = viewModel.clienteInfoFormState.rg.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -257,7 +264,8 @@ fun ClientInfoForm(
             Column {
                 OutlinedTextField(
                     value = viewModel.clienteInfoFormState.orgaoEmissor.value,
-                    onValueChange = { viewModel.setOrgaoEmissor(it) },
+                    onValueChange = { viewModel.clienteInfoFormState = viewModel.clienteInfoFormState
+                        .setOrgaoEmissor(it) },
                     label = { Text("*Orgão Emissor") },
                     modifier = Modifier
                         .padding(8.dp),

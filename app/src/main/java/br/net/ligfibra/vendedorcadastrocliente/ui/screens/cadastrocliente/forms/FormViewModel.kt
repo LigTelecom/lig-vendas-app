@@ -55,6 +55,8 @@ class FormViewModel(private val cepSearch: CEPSearchServices) : ViewModel() {
     // Info Form
     var clienteInfoFormState by mutableStateOf(ClienteInfoFormState())
 
+    
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun validadePessoalInfo(): ValidationResult<ClienteInfoPessoal> {
         clienteInfoFormState = clienteInfoFormState.copy(
@@ -166,96 +168,11 @@ class FormViewModel(private val cepSearch: CEPSearchServices) : ViewModel() {
         }
     }
 
-    fun setClienteNome(newName: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            clienteNome = clienteInfoFormState.clienteNome.copy(value = newName)
-        )
-    }
-
-    fun setDataNascimento(newDataNascimento: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            dataNascimento = clienteInfoFormState.dataNascimento.copy(value = newDataNascimento)
-        )
-    }
-
-    fun setTelefone(newTelefone: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            telefone = clienteInfoFormState.telefone.copy(value = newTelefone)
-        )
-    }
-
-    fun setEmail(newEmail: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            email = clienteInfoFormState.email.copy(value = newEmail)
-        )
-    }
-
-    fun setCpf(newCpf: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            cpf = clienteInfoFormState.cpf.copy(value = newCpf)
-        )
-    }
-
-    fun setRg(newRg: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            rg = clienteInfoFormState.rg.copy(value = newRg)
-        )
-    }
-
-    fun setOrgaoEmissor(newOrgaoEmissor: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            orgaoEmissor = clienteInfoFormState.orgaoEmissor.copy(value = newOrgaoEmissor)
-        )
-    }
-
-    fun setNaturalidade(newNaturalidade: String) {
-        clienteInfoFormState = clienteInfoFormState.copy(
-            naturalidade = clienteInfoFormState.naturalidade.copy(value = newNaturalidade)
-        )
-    }
 
     // Endereco Form
     var enderecoFormState by mutableStateOf(EnderecoFormState())
 
-    fun setCep(novoValor: String) {
-        enderecoFormState = enderecoFormState.copy(cep = enderecoFormState.cep.copy(value = novoValor))
-    }
-
-    fun setRua(novoValor: String) {
-        enderecoFormState = enderecoFormState.copy(rua = enderecoFormState.rua.copy(value = novoValor))
-    }
-
-    fun setBairro(novoValor: String) {
-        enderecoFormState = enderecoFormState.copy(bairro = enderecoFormState.bairro.copy(value = novoValor))
-    }
-
-    fun setCidade(novoValor: String) {
-        enderecoFormState = enderecoFormState.copy(cidade = enderecoFormState.cidade.copy(value = novoValor))
-    }
-
-    fun setComplemento(novoValor: String) {
-        enderecoFormState =
-            enderecoFormState.copy(complemento = enderecoFormState.complemento.copy(value = novoValor))
-    }
-
-    fun setNumeroCasa(novoValor: String) {
-        enderecoFormState =
-            enderecoFormState.copy(numeroCasa = enderecoFormState.numeroCasa.copy(value = novoValor))
-    }
-
-    fun setPontoReferencia(novoValor: String) {
-        enderecoFormState =
-            enderecoFormState.copy(pontoReferencia = enderecoFormState.pontoReferencia.copy(value = novoValor))
-    }
-
-    fun setTipoMoradia(novoValor: MoradiaEnum) {
-        enderecoFormState = enderecoFormState.copy(tipoMoradia = novoValor)
-    }
-
-    fun setLocalizacao(novoValor: ClienteLocalizacao?) {
-        enderecoFormState =
-            enderecoFormState.copy(localizacao = enderecoFormState.localizacao.copy(value = novoValor))
-    }
+    
 
     private suspend fun validateBairro(): ValidationResult<Bairro> {
         enderecoFormState = enderecoFormState.copy(

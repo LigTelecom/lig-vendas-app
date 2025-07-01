@@ -12,4 +12,13 @@ data class ClienteInfoFormState(
     val rg: DataField<String> = DataField("", ""),
     val orgaoEmissor: DataField<String> = DataField("", ""),
     val naturalidade: DataField<String> = DataField("", "")
-)
+) {
+    fun setClienteNome(newName: String) = copy(clienteNome = clienteNome.copy(value = newName))
+    fun setDataNascimento(newDataNascimento: String) = copy(dataNascimento = dataNascimento.copy(value = newDataNascimento))
+    fun setTelefone(newTelefone: String) = copy(telefone = telefone.copy(value = newTelefone))
+    fun setEmail(newEmail: String) = copy(email = email.copy(value = newEmail))
+    fun setCpf(newCpf: String) = copy(cpf = cpf.copy(value = newCpf))
+    fun setRg(newRg: String) = copy(rg = rg.copy(value = newRg))
+    fun setOrgaoEmissor(newOrgaoEmissor: String) = copy(orgaoEmissor = orgaoEmissor.copy(value = newOrgaoEmissor))
+    fun setNaturalidade(newNaturalidade: String) = copy(naturalidade = naturalidade.copy(value = newNaturalidade))
+}

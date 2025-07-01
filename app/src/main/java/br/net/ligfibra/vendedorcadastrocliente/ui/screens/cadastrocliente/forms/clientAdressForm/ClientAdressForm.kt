@@ -88,7 +88,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.cep.value,
-                    onValueChange = { viewModel.setCep(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setCep(it) },
                     label = { Text("*CEP") },
                     isError = enderecoState.cep.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -103,7 +103,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.cidade.value,
-                    onValueChange = { viewModel.setCidade(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setCidade(it) },
                     label = { Text("*Cidade") },
                     isError = enderecoState.cidade.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -119,7 +119,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.rua.value,
-                    onValueChange = { viewModel.setRua(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setRua(it) },
                     label = { Text("*Rua") },
                     isError = enderecoState.rua.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -133,7 +133,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.bairro.value,
-                    onValueChange = { viewModel.setBairro(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setBairro(it) },
                     label = { Text("*Bairro") },
                     isError = enderecoState.bairro.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -145,11 +145,14 @@ fun ClientAdressForm(
             }
         }
 
+        
+
         Row {
             Column {
                 OutlinedTextField(
                     value = enderecoState.pontoReferencia.value,
-                    onValueChange = { viewModel.setPontoReferencia(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState
+                        .setPontoReferencia(it) },
                     label = { Text("*Ponto de referência") },
                     isError = enderecoState.pontoReferencia.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -163,7 +166,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.complemento.value,
-                    onValueChange = { viewModel.setComplemento(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setComplemento(it) },
                     label = { Text("Complemento") },
                     isError = enderecoState.complemento.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -179,7 +182,7 @@ fun ClientAdressForm(
             Column {
                 OutlinedTextField(
                     value = enderecoState.numeroCasa.value,
-                    onValueChange = { viewModel.setNumeroCasa(it) },
+                    onValueChange = { viewModel.enderecoFormState = viewModel.enderecoFormState.setNumeroCasa(it) },
                     label = { Text("Numero da Casa") },
                     isError = enderecoState.numeroCasa.errorMessage.isNotEmpty(),
                     modifier = Modifier
@@ -226,7 +229,7 @@ fun ClientAdressForm(
                         DropdownMenuItem(text = { Text(text = moradia.toString()) },
                             onClick = {
                                 expandedTiposMoradiaSelect.value = false
-                                viewModel.setTipoMoradia(MoradiaEnum.valueOf(moradia))
+                                viewModel.enderecoFormState = viewModel.enderecoFormState.setTipoMoradia(MoradiaEnum.valueOf(moradia))
                             }
                         )
                     }
@@ -262,7 +265,7 @@ fun ClientAdressForm(
                 ),
                 onClick = {
                     getCurrentUserLocation(context, fusedLocationClient) {
-                        location -> viewModel.setLocalizacao(location)
+                        location -> viewModel.enderecoFormState = viewModel.enderecoFormState.setLocalizacao(location)
                     }
                 }
             ) {

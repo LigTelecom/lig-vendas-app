@@ -17,4 +17,14 @@ data class EnderecoFormState(
         value = ClienteLocalizacao(0.0, 0.0),
         errorMessage = ""
     )
-)
+) {
+    fun setCep(novoValor: String) = copy(cep = cep.copy(value = novoValor))
+    fun setRua(novoValor: String) = copy(rua = rua.copy(value = novoValor))
+    fun setBairro(novoValor: String) = copy(bairro = bairro.copy(value = novoValor))
+    fun setCidade(novoValor: String) = copy(cidade = cidade.copy(value = novoValor))
+    fun setComplemento(novoValor: String) = copy(complemento = complemento.copy(value = novoValor))
+    fun setNumeroCasa(novoValor: String) = copy(numeroCasa = numeroCasa.copy(value = novoValor))
+    fun setPontoReferencia(novoValor: String) = copy(pontoReferencia = pontoReferencia.copy(value = novoValor))
+    fun setTipoMoradia(novoValor: MoradiaEnum) = copy(tipoMoradia = novoValor)
+    fun setLocalizacao(novoValor: ClienteLocalizacao?) = copy(localizacao = localizacao.copy(value = novoValor))
+}
