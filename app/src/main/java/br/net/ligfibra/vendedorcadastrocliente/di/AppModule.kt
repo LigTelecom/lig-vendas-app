@@ -12,7 +12,6 @@ import br.net.ligfibra.vendedorcadastrocliente.services.services.CEPSearchServic
 import br.net.ligfibra.vendedorcadastrocliente.services.services.VendedorServicesImpl
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth.AuthViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoFormsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -54,6 +53,6 @@ val appModule = module {
     single<CEPSearchServices> { CEPSearchServicesImpl(get()) }
 
     viewModel { AuthViewModel(get()) }
-    viewModel { ClientInfoFormsViewModel() }
+    viewModel { FormViewModel(get()) }
     viewModel { FormViewModel(get()) }
 }

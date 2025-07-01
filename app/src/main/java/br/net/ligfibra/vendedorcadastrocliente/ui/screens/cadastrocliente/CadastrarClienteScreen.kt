@@ -23,7 +23,6 @@ import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoForm
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.DocumentsUploadForm
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoFormsViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.Form
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.GetPermissions
@@ -57,7 +56,7 @@ fun CadastrarClienteScreen(modifier: Modifier = Modifier) {
         Form(
             step = 2,
             content = {
-                val viewModelClientInfo: ClientInfoFormsViewModel = koinViewModel()
+                val viewModelClientInfo: FormViewModel = koinViewModel()
                 ClientInfoForm(
                     viewModel = viewModelClientInfo,
                     next = ::nextStep,

@@ -42,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import br.net.ligfibra.vendedorcadastrocliente.core.enums.EstadoCivilEnum
 import br.net.ligfibra.vendedorcadastrocliente.core.validation.ValidationResult
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.extensions.CPFVisualTransformation
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.HorizontalDividerWithText
@@ -55,7 +56,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClientInfoForm(
-    viewModel: ClientInfoFormsViewModel,
+    viewModel: FormViewModel,
     next: () -> Unit,
     back: () -> Unit) {
 
@@ -290,11 +291,10 @@ fun ClientInfoForm(
             Spacer(modifier = Modifier.width(10.dp))
             Button(
                 onClick = {
-                    val result = viewModel.validateForm()
+                    val result = viewModel.validateClienteInfoForm()
                     when (result) {
-                        is ValidationResult.Success -> next()
-                        is ValidationResult.Error -> {
-                        }
+                            is ValidationResult.Success -> next()
+                            is ValidationResult.Error -> {}
                     }
                 },
                 modifier = Modifier
