@@ -27,101 +27,113 @@ import br.net.ligfibra.vendedorcadastrocliente.core.exceptions.cliente.DataNasci
 import br.net.ligfibra.vendedorcadastrocliente.core.exceptions.cliente.EmailInvalidoException
 import br.net.ligfibra.vendedorcadastrocliente.core.exceptions.cliente.OrgaoEmissorInvalidoException
 import br.net.ligfibra.vendedorcadastrocliente.core.validation.ValidationResult
+import br.net.ligfibra.vendedorcadastrocliente.ui.utils.DataField
 
+
+data class ClienteInfoFormState(
+    val clienteNome: DataField<String> = DataField("", ""),
+    val dataNascimento: DataField<String> = DataField("", ""),
+    val telefone: DataField<String> = DataField("", ""),
+    val email: DataField<String> = DataField("", ""),
+    val cpf: DataField<String> = DataField("", ""),
+    val rg: DataField<String> = DataField("", ""),
+    val orgaoEmissor: DataField<String> = DataField("", ""),
+    val naturalidade: DataField<String> = DataField("", "")
+)
 
 @RequiresApi(Build.VERSION_CODES.O)
-public class ClientInfoFormsViewModel : ViewModel() {
+class ClientInfoFormsViewModel : ViewModel() {
 
-    var nomeCliente by mutableStateOf("")
-    var nomeClienteErrorMessage by mutableStateOf("")
-
-    var dataNascimento by mutableStateOf("")
-    var dataNascimentoErrorMessage by mutableStateOf("")
+    var clienteInfoFormState by mutableStateOf(ClienteInfoFormState())
 
     fun validadePessoalInfo(): ValidationResult<ClienteInfoPessoal> {
-        nomeClienteErrorMessage = ""
-        dataNascimentoErrorMessage = ""
+        clienteInfoFormState = clienteInfoFormState.copy(
+            clienteNome = clienteInfoFormState.clienteNome.copy(errorMessage = ""),
+            dataNascimento = clienteInfoFormState.dataNascimento.copy(errorMessage = "")
+        )
 
         return try {
             val pessoalInfo = ClienteInfoPessoal(
-                nome = Nome(nomeCliente),
-                nascimento = DataNascimento(dataNascimento)
+                nome = Nome(clienteInfoFormState.clienteNome.value),
+                nascimento = DataNascimento(clienteInfoFormState.dataNascimento.value)
             )
             ValidationResult.Success(pessoalInfo)
         } catch (e: ClienteNomeInvalidoException) {
-            nomeClienteErrorMessage = e.message.toString()
-            ValidationResult.Error(nomeClienteErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                clienteNome = clienteInfoFormState.clienteNome.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         } catch (e: DataNascimentoMenorDataAtualException) {
-            dataNascimentoErrorMessage = e.message.toString()
-            ValidationResult.Error(dataNascimentoErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                dataNascimento = clienteInfoFormState.dataNascimento.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         }
     }
 
-    var telefone by mutableStateOf("")
-    var telefoneErrorMessage by mutableStateOf("")
-
-    var email by mutableStateOf("")
-    var emailErrorMessage by mutableStateOf("")
-
     fun validateContato(): ValidationResult<ClienteContato> {
-        telefoneErrorMessage = ""
-        emailErrorMessage = ""
+        clienteInfoFormState = clienteInfoFormState.copy(
+            telefone = clienteInfoFormState.telefone.copy(errorMessage = ""),
+            email = clienteInfoFormState.email.copy(errorMessage = "")
+        )
 
         return try {
             val contato = ClienteContato(
-                telefone = Telefone(Telefone.formatarTelefoneComoIndexed(telefone)),
-                email = Email(email)
+                telefone = Telefone(Telefone.formatarTelefoneComoIndexed(clienteInfoFormState.telefone.value)),
+                email = Email(clienteInfoFormState.email.value)
             )
-            Log.i("validateContato", "validateContato: telefone $telefone ")
+            Log.i("validateContato", "validateContato: telefone ${clienteInfoFormState.telefone.value} ")
             ValidationResult.Success(contato)
         } catch(e: ClienteTelefoneInvalidoException) {
-            telefoneErrorMessage = e.message.toString()
-            ValidationResult.Error(telefoneErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                telefone = clienteInfoFormState.telefone.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         } catch (e: EmailInvalidoException) {
-            emailErrorMessage = e.message.toString()
-            ValidationResult.Error(emailErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                email = clienteInfoFormState.email.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         }
     }
 
-    var cpf by mutableStateOf("")
-    var cpfErrorMessage by mutableStateOf("")
-
-    var rg by mutableStateOf("")
-    var rgErrorMessage by mutableStateOf("")
-
-    var orgaoEmissor by mutableStateOf("")
-    var orgaoEmissorErrorMessage by mutableStateOf("")
-
-    var naturalidade by mutableStateOf("")
-    var naturalidadeErrorMessage by mutableStateOf("")
-
     fun validateDocumentos(): ValidationResult<ClienteDocumento> {
-        cpfErrorMessage = ""
-        rgErrorMessage = ""
-        orgaoEmissorErrorMessage = ""
-        naturalidadeErrorMessage = ""
+        clienteInfoFormState = clienteInfoFormState.copy(
+            cpf = clienteInfoFormState.cpf.copy(errorMessage = ""),
+            rg = clienteInfoFormState.rg.copy(errorMessage = ""),
+            orgaoEmissor = clienteInfoFormState.orgaoEmissor.copy(errorMessage = ""),
+            naturalidade = clienteInfoFormState.naturalidade.copy(errorMessage = "")
+        )
 
         return try {
             val documentos = ClienteDocumento(
-                cpf = CPF(cpf),
-                rg = RG(rg),
-                orgaoEmissor = OrgaoEmissor(orgaoEmissor),
-                naturalidade = Naturalidade(naturalidade)
+                cpf = CPF(clienteInfoFormState.cpf.value),
+                rg = RG(clienteInfoFormState.rg.value),
+                orgaoEmissor = OrgaoEmissor(clienteInfoFormState.orgaoEmissor.value),
+                naturalidade = Naturalidade(clienteInfoFormState.naturalidade.value)
             )
             Log.i("validateDocs", "validateDocumentos: ${documentos.cpf}")
             ValidationResult.Success(documentos)
         } catch (e: CpfInvalidoException) {
-            cpfErrorMessage = e.message.toString()
-            ValidationResult.Error(cpfErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                cpf = clienteInfoFormState.cpf.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         } catch (e: ClienteRGInvalidoException) {
-            rgErrorMessage = e.message.toString()
-            ValidationResult.Error(rgErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                rg = clienteInfoFormState.rg.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         } catch (e: OrgaoEmissorInvalidoException) {
-            orgaoEmissorErrorMessage = e.message.toString()
-            ValidationResult.Error(orgaoEmissorErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                orgaoEmissor = clienteInfoFormState.orgaoEmissor.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         } catch (e: NaturalidadeInvalidoException) {
-            naturalidadeErrorMessage = e.message.toString()
-            ValidationResult.Error(naturalidadeErrorMessage)
+            clienteInfoFormState = clienteInfoFormState.copy(
+                naturalidade = clienteInfoFormState.naturalidade.copy(errorMessage = e.message.toString())
+            )
+            ValidationResult.Error(e.message.toString())
         }
     }
 
@@ -141,5 +153,53 @@ public class ClientInfoFormsViewModel : ViewModel() {
             }
             else -> ValidationResult.Success(Unit)
         }
+    }
+
+    fun setClienteNome(newName: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            clienteNome = clienteInfoFormState.clienteNome.copy(value = newName)
+        )
+    }
+
+    fun setDataNascimento(newDataNascimento: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            dataNascimento = clienteInfoFormState.dataNascimento.copy(value = newDataNascimento)
+        )
+    }
+
+    fun setTelefone(newTelefone: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            telefone = clienteInfoFormState.telefone.copy(value = newTelefone)
+        )
+    }
+
+    fun setEmail(newEmail: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            email = clienteInfoFormState.email.copy(value = newEmail)
+        )
+    }
+
+    fun setCpf(newCpf: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            cpf = clienteInfoFormState.cpf.copy(value = newCpf)
+        )
+    }
+
+    fun setRg(newRg: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            rg = clienteInfoFormState.rg.copy(value = newRg)
+        )
+    }
+
+    fun setOrgaoEmissor(newOrgaoEmissor: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            orgaoEmissor = clienteInfoFormState.orgaoEmissor.copy(value = newOrgaoEmissor)
+        )
+    }
+
+    fun setNaturalidade(newNaturalidade: String) {
+        clienteInfoFormState = clienteInfoFormState.copy(
+            naturalidade = clienteInfoFormState.naturalidade.copy(value = newNaturalidade)
+        )
     }
 }

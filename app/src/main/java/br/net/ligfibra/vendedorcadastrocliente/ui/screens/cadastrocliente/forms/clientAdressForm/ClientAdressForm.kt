@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -27,22 +29,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewModelScope
 import br.net.ligfibra.vendedorcadastrocliente.core.entities.ClienteLocalizacao
 import br.net.ligfibra.vendedorcadastrocliente.core.enums.MoradiaEnum
 import br.net.ligfibra.vendedorcadastrocliente.core.validation.ValidationResult
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.extensions.CEPVisualTransformation
 import br.net.ligfibra.vendedorcadastrocliente.ui.widgets.HorizontalDividerWithText
@@ -58,78 +57,60 @@ import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.rememberCameraPositionState
+import kotlinx.coroutines.launch
 
 @Composable
 fun ClientAdressForm(
-    viewModel: ClientAdressFormViewModel,
+    viewModel: FormViewModel,
     next:() -> Unit,
     back:() -> Unit) {
 
     val context = LocalContext.current
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
-    var point by remember { mutableStateOf<ClienteLocalizacao?>(null) }
     val alagoas = LatLng(-9.763890555988786, -36.61089261823257)
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(alagoas, 12f)
     }
 
-    var cep by viewModel::cep
-    var cepErrorMessage by viewModel::cepErrorMessage
-
-    var cidade by viewModel::cidade
-    var cidadeErrorMessage by viewModel::cidadeErrorMessage
-
-    var rua by viewModel::rua
-    var ruaErrorMessage by viewModel::ruaErrorMessage
-
-    var numeroCasa by viewModel::numeroCasa
-    var numeroCasaErrorMessage by viewModel::numeroCasaErrorMessage
-
-    var bairro by viewModel::bairroNome
-    var bairroErrorMessage by viewModel::bairroNomeErrorMessage
-
-    var pontoReferencia by viewModel::pontoReferencia
-    var pontoReferenciaErrorMessage by viewModel::pontoReferenciaErrorMessage
-
-    var localizacaoInputValue by remember { mutableStateOf<ClienteLocalizacao?>(null) }
+    val enderecoState = viewModel.enderecoFormState
 
     val tipoMoradias = MoradiaEnum.getTiposMoradia()
-    val coroutineScope = rememberCoroutineScope()
-    val tipoMoradiSelected = remember {
-        mutableStateOf(MoradiaEnum.Propria)
-    }
     var expandedTiposMoradiaSelect = remember { mutableStateOf(false) }
 
-    Column(verticalArrangement = Arrangement.Center) {
+    var scrollState = rememberScrollState()
+    Column(
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.verticalScroll(state = scrollState)
+    ) {
         HorizontalDividerWithText(text = "Endereço")
 
         Row {
             Column {
                 OutlinedTextField(
-                    value = cep,
-                    onValueChange = { viewModel.cep = it },
+                    value = enderecoState.cep.value,
+                    onValueChange = { viewModel.setCep(it) },
                     label = { Text("*CEP") },
-                    isError = cepErrorMessage.isNotEmpty(),
+                    isError = enderecoState.cep.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                     visualTransformation = CEPVisualTransformation(),
                 )
-                if (cepErrorMessage.isNotEmpty()) {
-                    Text(text = cepErrorMessage, color = Color.Red)
+                if (enderecoState.cep.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.cep.errorMessage, color = Color.Red)
                 }
             }
 
             Column {
                 OutlinedTextField(
-                    value = cidade,
-                    onValueChange = { viewModel.cidade = it },
+                    value = enderecoState.cidade.value,
+                    onValueChange = { viewModel.setCidade(it) },
                     label = { Text("*Cidade") },
-                    isError = cidadeErrorMessage.isNotEmpty(),
+                    isError = enderecoState.cidade.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (cidadeErrorMessage.isNotEmpty()) {
-                    Text(text = cidadeErrorMessage, color = Color.Red)
+                if (enderecoState.cidade.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.cidade.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -137,28 +118,29 @@ fun ClientAdressForm(
         Row {
             Column {
                 OutlinedTextField(
-                    value = rua,
-                    onValueChange = { viewModel.rua = it },
+                    value = enderecoState.rua.value,
+                    onValueChange = { viewModel.setRua(it) },
                     label = { Text("*Rua") },
+                    isError = enderecoState.rua.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (ruaErrorMessage.isNotEmpty()) {
-                    Text(text = ruaErrorMessage, color = Color.Red)
+                if (enderecoState.rua.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.rua.errorMessage, color = Color.Red)
                 }
             }
 
             Column {
                 OutlinedTextField(
-                    value = bairro,
-                    onValueChange = { viewModel.bairroNome = it },
+                    value = enderecoState.bairro.value,
+                    onValueChange = { viewModel.setBairro(it) },
                     label = { Text("*Bairro") },
-                    isError = bairroErrorMessage.isNotEmpty(),
+                    isError = enderecoState.bairro.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (bairroErrorMessage.isNotEmpty()) {
-                    Text(text = bairroErrorMessage, color = Color.Red)
+                if (enderecoState.bairro.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.bairro.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -166,15 +148,29 @@ fun ClientAdressForm(
         Row {
             Column {
                 OutlinedTextField(
-                    value = pontoReferencia,
-                    onValueChange = { viewModel.pontoReferencia = it },
+                    value = enderecoState.pontoReferencia.value,
+                    onValueChange = { viewModel.setPontoReferencia(it) },
                     label = { Text("*Ponto de referência") },
+                    isError = enderecoState.pontoReferencia.errorMessage.isNotEmpty(),
                     modifier = Modifier
-                        .fillMaxWidth()
                         .padding(8.dp),
                 )
-                if (pontoReferenciaErrorMessage.isNotEmpty()) {
-                    Text(text = pontoReferenciaErrorMessage, color = Color.Red)
+                if (enderecoState.pontoReferencia.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.pontoReferencia.errorMessage, color = Color.Red)
+                }
+            }
+
+            Column {
+                OutlinedTextField(
+                    value = enderecoState.complemento.value,
+                    onValueChange = { viewModel.setComplemento(it) },
+                    label = { Text("Complemento") },
+                    isError = enderecoState.complemento.errorMessage.isNotEmpty(),
+                    modifier = Modifier
+                        .padding(8.dp),
+                )
+                if (enderecoState.complemento.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.complemento.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -182,14 +178,15 @@ fun ClientAdressForm(
         Row {
             Column {
                 OutlinedTextField(
-                    value = numeroCasa,
-                    onValueChange = { viewModel.numeroCasa = it },
+                    value = enderecoState.numeroCasa.value,
+                    onValueChange = { viewModel.setNumeroCasa(it) },
                     label = { Text("Numero da Casa") },
+                    isError = enderecoState.numeroCasa.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (numeroCasaErrorMessage.isNotEmpty()) {
-                    Text(text = numeroCasaErrorMessage, color = Color.Red)
+                if (enderecoState.numeroCasa.errorMessage.isNotEmpty()) {
+                    Text(text = enderecoState.numeroCasa.errorMessage, color = Color.Red)
                 }
             }
 
@@ -217,7 +214,7 @@ fun ClientAdressForm(
                         )
                     }
                     Text(
-                        text = tipoMoradiSelected.value.toString(),
+                        text = enderecoState.tipoMoradia.toString(),
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -229,7 +226,7 @@ fun ClientAdressForm(
                         DropdownMenuItem(text = { Text(text = moradia.toString()) },
                             onClick = {
                                 expandedTiposMoradiaSelect.value = false
-                                tipoMoradiSelected.value = MoradiaEnum.valueOf(moradia)
+                                viewModel.setTipoMoradia(MoradiaEnum.valueOf(moradia))
                             }
                         )
                     }
@@ -244,7 +241,7 @@ fun ClientAdressForm(
 
             Box(modifier = Modifier.padding(vertical = 8.dp)) {
                 MapView(
-                    pointSettings = MapViewPointSettings(point = point, "teste"),
+                    pointSettings = MapViewPointSettings(point = enderecoState.localizacao.value, "teste"),
                     settings = MapViewSettings(
                         height = 256.dp,
                         borderColor = MaterialTheme.colorScheme.secondary
@@ -265,7 +262,7 @@ fun ClientAdressForm(
                 ),
                 onClick = {
                     getCurrentUserLocation(context, fusedLocationClient) {
-                        location -> point = location
+                        location -> viewModel.setLocalizacao(location)
                     }
                 }
             ) {
@@ -298,7 +295,7 @@ fun ClientAdressForm(
             Button(
                 onClick = {
                     viewModel.viewModelScope.launch {
-                        val result = viewModel.validateForm()
+                        val result = viewModel.validateAddressForm()
                         when (result) {
                             is ValidationResult.Success -> next()
                             is ValidationResult.Error -> {}

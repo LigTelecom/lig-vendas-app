@@ -11,7 +11,7 @@ import br.net.ligfibra.vendedorcadastrocliente.services.interfaces.CEPSearchServ
 import br.net.ligfibra.vendedorcadastrocliente.services.services.CEPSearchServicesImpl
 import br.net.ligfibra.vendedorcadastrocliente.services.services.VendedorServicesImpl
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.auth.AuthViewModel
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientAdressForm.ClientAdressFormViewModel
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoFormsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -55,5 +55,5 @@ val appModule = module {
 
     viewModel { AuthViewModel(get()) }
     viewModel { ClientInfoFormsViewModel() }
-    viewModel { ClientAdressFormViewModel(get()) }
+    viewModel { FormViewModel(get()) }
 }

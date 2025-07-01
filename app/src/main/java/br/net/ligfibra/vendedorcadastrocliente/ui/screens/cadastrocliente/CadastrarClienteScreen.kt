@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientAdressForm.ClientAdressForm
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoForm
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.DocumentsUploadForm
-import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientAdressForm.ClientAdressFormViewModel
+import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.FormViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.screens.cadastrocliente.forms.clientInfoForm.ClientInfoFormsViewModel
 import br.net.ligfibra.vendedorcadastrocliente.ui.theme.VendedorcadastroclienteTheme
 import br.net.ligfibra.vendedorcadastrocliente.ui.utils.Form
@@ -51,7 +51,7 @@ fun CadastrarClienteScreen(modifier: Modifier = Modifier) {
         Form(
             step = 1,
             content = {
-                DocumentsUploadForm(::nextStep)
+                DocumentsUploadForm(next = ::nextStep)
             },
         ),
         Form(
@@ -68,7 +68,7 @@ fun CadastrarClienteScreen(modifier: Modifier = Modifier) {
         Form(
             step = 3,
             content = {
-                val viewModelClientAdress: ClientAdressFormViewModel = koinViewModel()
+                val viewModelClientAdress: FormViewModel = koinViewModel()
                 ClientAdressForm(
                     viewModel = viewModelClientAdress,
                     ::nextStep,

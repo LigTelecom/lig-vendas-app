@@ -60,54 +60,30 @@ fun ClientInfoForm(
     back: () -> Unit) {
 
     // Info Pessoal
-    var name by viewModel::nomeCliente
-    var nomeErroMessage by viewModel::nomeClienteErrorMessage
 
     val focusManager = LocalFocusManager.current
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
 
-    var selectedDate by viewModel::dataNascimento
-    var selectedDateErrorMessage by viewModel::dataNascimentoErrorMessage
+    
 
-    var estadoCivil by remember { mutableStateOf("") }
-
-    val clientContactPhone by viewModel::telefone
-    val clientContactPhoneError by viewModel::telefoneErrorMessage
-
-    // Contato
-    var clientEmail by viewModel::email
-    var clientEmailErrorMessage by viewModel::emailErrorMessage
-
-    // Documentos
-    var cpf by viewModel::cpf
-    var cpfErrorMessage by viewModel::cpfErrorMessage
-    var rg by viewModel::rg
-    var rgErrorMessage by viewModel::rgErrorMessage
-
-    var orgaoEmissor by viewModel::orgaoEmissor
-    var orgaoEmissorErrorMessage by viewModel::orgaoEmissorErrorMessage
-
-    var naturalidade by viewModel::naturalidade
-    var naturalidadeErrorMessage by viewModel::naturalidadeErrorMessage
-
-    var expandedEstadoCivilSelect = remember { mutableStateOf(false) }
+    val expandedEstadoCivilSelect = remember { mutableStateOf(false) }
 
     Column(verticalArrangement = Arrangement.Center) {
         HorizontalDividerWithText(text = "Informações pessoais")
         Row {
             Column {
                 OutlinedTextField(
-                    value = viewModel.nomeCliente,
-                    onValueChange = { viewModel.nomeCliente = it },
+                    value = viewModel.clienteInfoFormState.clienteNome.value,
+                    onValueChange = { viewModel.setClienteNome(it) },
                     label = { Text("*Nome Completo") },
-                    isError = nomeErroMessage.isNotEmpty(),
+                    isError = viewModel.clienteInfoFormState.clienteNome.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth(),
                 )
-                if (nomeErroMessage.isNotEmpty()) {
-                    Text(text = nomeErroMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.clienteNome.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.clienteNome.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -119,7 +95,7 @@ fun ClientInfoForm(
                         onClick = {
                             datePickerState
                                 .selectedDateMillis?.let { millis ->
-                                    selectedDate = millis.toBrazilianDate()
+                                    viewModel.setDataNascimento(millis.toBrazilianDate())
                                 }
                             showDatePickerDialog = false
                         }
@@ -135,8 +111,8 @@ fun ClientInfoForm(
         Row{
             Column {
                 OutlinedTextField(
-                    value = selectedDate,
-                    onValueChange = {},
+                    value = viewModel.clienteInfoFormState.dataNascimento.value,
+                    onValueChange = { },
                     label = { Text("*Data de nascimento") },
                     readOnly = true,
                     modifier = Modifier
@@ -148,8 +124,8 @@ fun ClientInfoForm(
                             }
                         },
                 )
-                if (selectedDateErrorMessage.isNotEmpty()) {
-                    Text(text = selectedDateErrorMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.dataNascimento.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.dataNascimento.errorMessage, color = Color.Red)
                 }
             }
 
@@ -201,40 +177,43 @@ fun ClientInfoForm(
         }
 
         OutlinedTextField(
-            value = naturalidade,
+            value = viewModel.clienteInfoFormState.naturalidade.value,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             label = { Text("*Naturalidade") },
-            onValueChange = { naturalidade = it },
+            onValueChange = { viewModel.setNaturalidade(it) },
             modifier = Modifier
                 .padding(8.dp),
         )
+        if (viewModel.clienteInfoFormState.naturalidade.errorMessage.isNotEmpty()) {
+            Text(text = viewModel.clienteInfoFormState.naturalidade.errorMessage, color = Color.Red)
+        }
         HorizontalDividerWithText(text = "Informações para contato")
         Row {
             Column {
                 OutlinedTextField(
-                    value = clientContactPhone,
+                    value = viewModel.clienteInfoFormState.telefone.value,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    onValueChange = { viewModel.telefone = it },
+                    onValueChange = { viewModel.setTelefone(it) },
                     label = { Text("*Telefone") },
-                    isError = clientContactPhoneError.isNotEmpty(),
+                    isError = viewModel.clienteInfoFormState.telefone.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (clientContactPhoneError.isNotEmpty()) {
-                    Text(text = clientContactPhoneError, color = Color.Red)
+                if (viewModel.clienteInfoFormState.telefone.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.telefone.errorMessage, color = Color.Red)
                 }
             }
             Column {
                 OutlinedTextField(
-                    value = clientEmail,
-                    onValueChange = { clientEmail = it },
+                    value = viewModel.clienteInfoFormState.email.value,
+                    onValueChange = { viewModel.setEmail(it) },
                     label = { Text("Email") },
-                    isError = clientEmailErrorMessage.isNotEmpty(),
+                    isError = viewModel.clienteInfoFormState.email.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (clientEmailErrorMessage.isNotEmpty()) {
-                    Text(text = clientEmailErrorMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.email.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.email.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -244,31 +223,31 @@ fun ClientInfoForm(
         Row {
             Column {
                 OutlinedTextField(
-                    value = viewModel.cpf,
-                    onValueChange = { viewModel.cpf = it },
+                    value = viewModel.clienteInfoFormState.cpf.value,
+                    onValueChange = { viewModel.setCpf(it) },
                     label = { Text("*CPF") },
-                    isError = cpfErrorMessage.isNotEmpty(),
+                    isError = viewModel.clienteInfoFormState.cpf.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp),
                     visualTransformation = CPFVisualTransformation(),
                 )
-                if (cpfErrorMessage.isNotEmpty()) {
-                    Text(text = cpfErrorMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.cpf.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.cpf.errorMessage, color = Color.Red)
                 }
             }
 
             Column {
                 OutlinedTextField(
-                    value = viewModel.rg,
-                    onValueChange = { viewModel.rg = it },
+                    value = viewModel.clienteInfoFormState.rg.value,
+                    onValueChange = { viewModel.setRg(it) },
                     label = { Text("*RG") },
-                    isError = rgErrorMessage.isNotEmpty(),
+                    isError = viewModel.clienteInfoFormState.rg.errorMessage.isNotEmpty(),
                     modifier = Modifier
                         .padding(8.dp)
                         .fillMaxWidth()
                 )
-                if (rgErrorMessage.isNotEmpty()) {
-                    Text(text = rgErrorMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.rg.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.rg.errorMessage, color = Color.Red)
                 }
             }
         }
@@ -276,14 +255,14 @@ fun ClientInfoForm(
         Row {
             Column {
                 OutlinedTextField(
-                    value = viewModel.orgaoEmissor,
-                    onValueChange = { viewModel.orgaoEmissor = it },
+                    value = viewModel.clienteInfoFormState.orgaoEmissor.value,
+                    onValueChange = { viewModel.setOrgaoEmissor(it) },
                     label = { Text("*Orgão Emissor") },
                     modifier = Modifier
                         .padding(8.dp),
                 )
-                if (orgaoEmissorErrorMessage.isNotEmpty()) {
-                    Text(text = orgaoEmissorErrorMessage, color = Color.Red)
+                if (viewModel.clienteInfoFormState.orgaoEmissor.errorMessage.isNotEmpty()) {
+                    Text(text = viewModel.clienteInfoFormState.orgaoEmissor.errorMessage, color = Color.Red)
                 }
             }
         }
